@@ -1,10 +1,16 @@
 .container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
 }
 
 .stage {
+  align-items: center;
   display: flex;
   justify-content: center;
+  min-height: 300px;
 }
 
 .item:not(.active) {
@@ -13,17 +19,36 @@
 
 .arrows-container {
   align-items: center;
-  bottom: 0;
+  bottom: 10px;
   display: flex;
   justify-content: space-between;
   left: 0;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 10px;
 }
 
 .arrow {
   background: transparent;
   border: none;
   padding: 0;
+}
+
+.items-selector-container {
+  display: flex;
+  margin-top: 10px;
+  width: 200px;
+}
+
+.item-selector {
+  background: #F8B195;
+  border: none;
+  flex: 1 1 auto;
+  height: 5px;
+  margin: 0 2px;
+}
+
+.item-selector.active {
+  background: #F67280;
+  flex-basis: 30%;
 }

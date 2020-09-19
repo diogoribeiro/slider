@@ -74,5 +74,19 @@ describe('Slider', () => {
   
       expect(getByText('Item #2').parentElement).toHaveClass('active');
     });
+
+    it('renders item selector', () => {
+      const { getByLabelText } = render(slider);
+
+      expect(getByLabelText('Show item 1')).toBeInTheDocument();
+    });
+
+    it('shows the selected item', () => {
+      const { getByLabelText, getByText } = render(slider);
+
+      fireEvent.click(getByLabelText('Show item 2'));
+
+      expect(getByText('Item #2').parentElement).toHaveClass('active');
+    });
   });
 });

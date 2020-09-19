@@ -33,6 +33,31 @@ function renderArrows(totalItems, onClick) {
   );
 }
 
+function renderItemSelector(items, currentItem, onClick) {
+  if (items.length < 2) {
+    return null;
+  }
+
+  const selectors = items.map((item, index) => {
+    const className = index === currentItem ? 'item-selector active' : 'item-selector';
+    return (
+      <button
+        key={`item-selector-${item.key}`}
+        aria-label={`Show item ${index + 1}`}
+        className={className}
+        onClick={() => onClick(index)}
+        type="button"
+      />
+    );
+  });
+
+  return (
+    <div className="items-selector-container">
+      {selectors}
+    </div>
+  );
+}
+
 function nextItem(factor, currentItem, totalItems) {
   if (factor === NEXT_ITEM && currentItem === totalItems - 1) {
     return 0;
@@ -46,15 +71,18 @@ function nextItem(factor, currentItem, totalItems) {
 }
 
 const Slider = ({ children = [] }) => {
+  const items = [children].flat();
   const [currentItem, setCurrentItem] = useState(0);
-  const onClick = (factor) => setCurrentItem(nextItem(factor, currentItem, children.length));
+  const onClickArrow = (factor) => setCurrentItem(nextItem(factor, currentItem, items.length));
+  const onClickItemSelector = (item) => setCurrentItem(item);
 
   return (
     <div className="container">
       <div className="stage">
-        {renderItems(children, currentItem)}
+        {renderItems(items, currentItem)}
       </div>
-      {renderArrows(children.length, onClick)}
+      {renderArrows(items.length, onClickArrow)}
+      {renderItemSelector(items, currentItem, onClickItemSelector)}
     </div>
   );
 };
