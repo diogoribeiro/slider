@@ -51,7 +51,9 @@ const Slider = ({ children = [] }) => {
 
   return (
     <div className="container">
-      {renderItems(children, currentItem)}
+      <div className="stage">
+        {renderItems(children, currentItem)}
+      </div>
       {renderArrows(children.length, onClick)}
     </div>
   );

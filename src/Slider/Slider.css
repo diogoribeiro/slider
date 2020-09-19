@@ -2,6 +2,11 @@
   position: relative;
 }
 
+.stage {
+  display: flex;
+  justify-content: center;
+}
+
 .item:not(.active) {
   display: none;
 }
