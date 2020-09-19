@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+import ItemSelector from '@/ItemSelector';
+
 import leftArrow from '@/assets/left-arrow.svg';
 import rightArrow from '@/assets/right-arrow.svg';
 
@@ -33,31 +35,6 @@ function renderArrows(totalItems, onClick) {
   );
 }
 
-function renderItemSelector(items, currentItem, onClick) {
-  if (items.length < 2) {
-    return null;
-  }
-
-  const selectors = items.map((item, index) => {
-    const className = index === currentItem ? 'item-selector active' : 'item-selector';
-    return (
-      <button
-        key={`item-selector-${item.key}`}
-        aria-label={`Show item ${index + 1}`}
-        className={className}
-        onClick={() => onClick(index)}
-        type="button"
-      />
-    );
-  });
-
-  return (
-    <div className="items-selector-container">
-      {selectors}
-    </div>
-  );
-}
-
 function nextItem(factor, currentItem, totalItems) {
   if (factor === NEXT_ITEM && currentItem === totalItems - 1) {
     return 0;
@@ -70,7 +47,7 @@ function nextItem(factor, currentItem, totalItems) {
   return currentItem + factor;
 }
 
-const Slider = ({ children = [] }) => {
+const Slider = ({ children = [], customItemSelector: CustomItemSelector }) => {
   const items = [children].flat();
   const [currentItem, setCurrentItem] = useState(0);
   const onClickArrow = (factor) => setCurrentItem(nextItem(factor, currentItem, items.length));
@@ -82,17 +59,19 @@ const Slider = ({ children = [] }) => {
         {renderItems(items, currentItem)}
       </div>
       {renderArrows(items.length, onClickArrow)}
-      {renderItemSelector(items, currentItem, onClickItemSelector)}
+      <CustomItemSelector currentItem={currentItem} items={items} onClick={onClickItemSelector} />
     </div>
   );
 };
 
 Slider.propTypes = {
   children: PropTypes.node,
+  customItemSelector: PropTypes.func,
 };
 
 Slider.defaultProps = {
   children: [],
+  customItemSelector: ItemSelector,
 };
 
 export default Slider;

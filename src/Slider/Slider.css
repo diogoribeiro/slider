@@ -33,22 +33,3 @@
   border: none;
   padding: 0;
 }
-
-.items-selector-container {
-  display: flex;
-  margin-top: 10px;
-  width: 200px;
-}
-
-.item-selector {
-  background: #F8B195;
-  border: none;
-  flex: 1 1 auto;
-  height: 5px;
-  margin: 0 2px;
-}
-
-.item-selector.active {
-  background: #F67280;
-  flex-basis: 30%;
-}
