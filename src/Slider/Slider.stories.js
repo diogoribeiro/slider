@@ -3,7 +3,7 @@ import React from 'react';
 import Slider from '@/Slider';
 
 export default {
-  title: 'Example/Slider',
+  title: 'Slider',
   component: Slider,
 };
 
@@ -19,3 +19,13 @@ SingleItem.storyName = 'With a single item';
 
 export const MultipleItems = () => <Slider>{children}</Slider>;
 MultipleItems.storyName = 'With multiple items';
+
+
+const CustomItemSelector = ({ currentItem, items }) => (
+  <div>
+    <div>{`Current Item: ${currentItem + 1}`}</div>
+  </div>
+);
+
+export const WithCustomItemSelector = () => <Slider customItemSelector={CustomItemSelector}>{children}</Slider>;
+WithCustomItemSelector.storyName = 'With custom item selector';
