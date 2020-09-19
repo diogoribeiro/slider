@@ -7,11 +7,10 @@ export default {
   component: Slider,
 };
 
-const Template = (children) => <Slider>{children}</Slider>;
-
 const children = [
-  <div>Item #1</div>,
-  <div>Item #2</div>,
+  <img src="https://picsum.photos/200/300" alt="Example 1" />,
+  <div>Example 2</div>,
+  <img src="https://picsum.photos/200/300" alt="Example 3" />,
 ];
-export const Arrows = Template.bind({ children });
-Arrows.args = { children };
+
+export const Arrows = () => <Slider>{children}</Slider>;
