@@ -47,18 +47,32 @@ function nextItem(factor, currentItem, totalItems) {
   return currentItem + factor;
 }
 
+
+
 const Slider = ({ children = [], customItemSelector: CustomItemSelector }) => {
   const items = [children].flat();
   const [currentItem, setCurrentItem] = useState(0);
+  const [initialPosition, setInitialPosition] = useState(0);
   const onClickArrow = (factor) => setCurrentItem(nextItem(factor, currentItem, items.length));
   const onClickItemSelector = (item) => setCurrentItem(item);
 
+  const initPosition = (e) => {
+    console.log('moving', e.clientX);
+    setInitialPosition(e.clientX);
+  };
+  const stopPosition = (e) => {
+    const finalPosition = e.clientX;
+    console.log('stopped', e.clientX, initialPosition, finalPosition < initialPosition);
+    const factor = finalPosition < initialPosition ? PREVIOUS_ITEM : NEXT_ITEM;
+    onClickArrow(factor);
+  };
+
   return (
     <div className="container">
-      <div className="stage">
+      <div className="stage" onTouchStart={initPosition} onTouchEnd={stopPosition} onMouseDown={initPosition} onMouseUp={stopPosition}>
         {renderItems(items, currentItem)}
       </div>
-      {renderArrows(items.length, onClickArrow)}
+      {/* {renderArrows(items.length, onClickArrow)} */}
       <CustomItemSelector currentItem={currentItem} items={items} onClick={onClickItemSelector} />
     </div>
   );
