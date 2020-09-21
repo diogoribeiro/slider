@@ -20,7 +20,6 @@ SingleItem.storyName = 'With a single item';
 export const MultipleItems = () => <Slider>{children}</Slider>;
 MultipleItems.storyName = 'With multiple items';
 
-
 const CustomItemSelector = ({ currentItem, items }) => (
   <div>
     <div>{`Current Item: ${currentItem + 1}`}</div>
