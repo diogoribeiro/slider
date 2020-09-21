@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import ItemSelector from '@/ItemSelector';
 import Stage from '@/Stage';
 
-import leftArrow from '@/assets/left-arrow.svg';
-import rightArrow from '@/assets/right-arrow.svg';
-
 import '@/Slider/Slider.css';
+import LeftNavigationArrow from '@/NavigationArrow/LeftNavigationArrow';
+import RightNavigationArrow from '@/NavigationArrow/RightNavigationArrow';
 
 const NEXT_ITEM = 1;
 const PREVIOUS_ITEM = -1;
@@ -19,26 +18,24 @@ function renderItems(items, currentItem) {
   });
 }
 
-function renderArrow(totalItems, onClick, factor, label, className, arrow) {
+function renderLeftArrow(totalItems, onClick, CustomLeftArrow) {
   if (totalItems <= 1) {
     return null;
   }
 
   return (
-    <div className={`arrow-container ${className}`}>
-      <button onClick={() => onClick(factor)} aria-label={label} className="arrow" type="button">
-        <img src={arrow} aria-hidden="true" alt={label} />
-      </button>
-    </div>
+    <CustomLeftArrow onClick={() => onClick(PREVIOUS_ITEM)} />
   );
 }
 
-function renderLeftArrow(totalItems, onClick) {
-  return renderArrow(totalItems, onClick, PREVIOUS_ITEM, 'Previous item', 'left', leftArrow);
-}
+function renderRightArrow(totalItems, onClick, CustomRightArrow) {
+  if (totalItems <= 1) {
+    return null;
+  }
 
-function renderRightArrow(totalItems, onClick) {
-  return renderArrow(totalItems, onClick, NEXT_ITEM, 'Next item', 'right', rightArrow);
+  return (
+    <CustomRightArrow onClick={() => onClick(PREVIOUS_ITEM)} />
+  );
 }
 
 function nextItem(factor, currentItem, totalItems) {
@@ -53,7 +50,12 @@ function nextItem(factor, currentItem, totalItems) {
   return currentItem + factor;
 }
 
-const Slider = ({ children = [], customItemSelector: CustomItemSelector }) => {
+const Slider = ({
+  children = [],
+  customItemSelector: CustomItemSelector,
+  customLeftArrow: CustomLeftArrow,
+  customRightArrow: CustomRightArrow,
+}) => {
   const items = [children].flat();
   const [currentItem, setCurrentItem] = useState(0);
   const onClickArrow = (factor) => setCurrentItem(nextItem(factor, currentItem, items.length));
@@ -61,11 +63,11 @@ const Slider = ({ children = [], customItemSelector: CustomItemSelector }) => {
 
   return (
     <div className="container">
-      {renderLeftArrow(items.length, onClickArrow)}
+      {renderLeftArrow(items.length, onClickArrow, CustomLeftArrow)}
       <Stage onTouch={onClickArrow}>
         {renderItems(items, currentItem)}
       </Stage>
-      {renderRightArrow(items.length, onClickArrow)}
+      {renderRightArrow(items.length, onClickArrow, CustomRightArrow)}
       <CustomItemSelector currentItem={currentItem} items={items} onClick={onClickItemSelector} />
     </div>
   );
@@ -74,11 +76,15 @@ const Slider = ({ children = [], customItemSelector: CustomItemSelector }) => {
 Slider.propTypes = {
   children: PropTypes.node,
   customItemSelector: PropTypes.func,
+  customLeftArrow: PropTypes.func,
+  customRightArrow: PropTypes.func,
 };
 
 Slider.defaultProps = {
   children: [],
   customItemSelector: ItemSelector,
+  customLeftArrow: LeftNavigationArrow,
+  customRightArrow: RightNavigationArrow,
 };
 
 export default Slider;

@@ -44,7 +44,6 @@
     "eslint-plugin-react-hooks": "^4.1.2",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.4.2",
-    "jest-transform-stub": "^2.0.0",
     "style-loader": "^1.2.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
@@ -55,7 +54,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^.+\\.svg$": "jest-transform-stub",
+      "^.+\\.svg$": "<rootDir>/jestSvgTransform.js",
       ".+\\.(css|scss)$": "identity-obj-proxy"
     }
   }

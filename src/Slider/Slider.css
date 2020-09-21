@@ -14,26 +14,3 @@
 .item:not(.active) {
   display: none;
 }
-
-.arrow-container {
-  align-items: center;
-  bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  top: 10px;
-}
-
-.arrow-container.left {
-  left: 0;
-}
-
-.arrow-container.right {
-  right: 0;
-}
-
-.arrow {
-  background: transparent;
-  border: none;
-  padding: 0;
-}
