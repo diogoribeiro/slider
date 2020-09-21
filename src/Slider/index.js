@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import ItemSelector from '@/ItemSelector';
+import Stage from '@/Stage';
 
 import leftArrow from '@/assets/left-arrow.svg';
 import rightArrow from '@/assets/right-arrow.svg';
@@ -18,21 +19,26 @@ function renderItems(items, currentItem) {
   });
 }
 
-function renderArrows(totalItems, onClick) {
+function renderArrow(totalItems, onClick, factor, label, className, arrow) {
   if (totalItems <= 1) {
     return null;
   }
 
   return (
-    <div className="arrows-container">
-      <button onClick={() => onClick(PREVIOUS_ITEM)} aria-label="Previous item" className="arrow" type="button">
-        <img src={leftArrow} aria-hidden="true" alt="Previous item" />
-      </button>
-      <button onClick={() => onClick(NEXT_ITEM)} aria-label="Next item" className="arrow" type="button">
-        <img src={rightArrow} aria-hidden="true" alt="Next item" />
+    <div className={`arrow-container ${className}`}>
+      <button onClick={() => onClick(factor)} aria-label={label} className="arrow" type="button">
+        <img src={arrow} aria-hidden="true" alt={label} />
       </button>
     </div>
   );
+}
+
+function renderLeftArrow(totalItems, onClick) {
+  return renderArrow(totalItems, onClick, PREVIOUS_ITEM, 'Previous item', 'left', leftArrow);
+}
+
+function renderRightArrow(totalItems, onClick) {
+  return renderArrow(totalItems, onClick, NEXT_ITEM, 'Next item', 'right', rightArrow);
 }
 
 function nextItem(factor, currentItem, totalItems) {
@@ -47,32 +53,19 @@ function nextItem(factor, currentItem, totalItems) {
   return currentItem + factor;
 }
 
-
-
 const Slider = ({ children = [], customItemSelector: CustomItemSelector }) => {
   const items = [children].flat();
   const [currentItem, setCurrentItem] = useState(0);
-  const [initialPosition, setInitialPosition] = useState(0);
   const onClickArrow = (factor) => setCurrentItem(nextItem(factor, currentItem, items.length));
   const onClickItemSelector = (item) => setCurrentItem(item);
 
-  const initPosition = (e) => {
-    console.log('moving', e.clientX);
-    setInitialPosition(e.clientX);
-  };
-  const stopPosition = (e) => {
-    const finalPosition = e.clientX;
-    console.log('stopped', e.clientX, initialPosition, finalPosition < initialPosition);
-    const factor = finalPosition < initialPosition ? PREVIOUS_ITEM : NEXT_ITEM;
-    onClickArrow(factor);
-  };
-
   return (
     <div className="container">
-      <div className="stage" onTouchStart={initPosition} onTouchEnd={stopPosition} onMouseDown={initPosition} onMouseUp={stopPosition}>
+      {renderLeftArrow(items.length, onClickArrow)}
+      <Stage onTouch={onClickArrow}>
         {renderItems(items, currentItem)}
-      </div>
-      {/* {renderArrows(items.length, onClickArrow)} */}
+      </Stage>
+      {renderRightArrow(items.length, onClickArrow)}
       <CustomItemSelector currentItem={currentItem} items={items} onClick={onClickItemSelector} />
     </div>
   );
