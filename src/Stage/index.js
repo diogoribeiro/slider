@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+import '@/Stage/Stage.css';
+
 const NEXT_ITEM = 1;
 const PREVIOUS_ITEM = -1;
 

@@ -6,13 +6,6 @@
   position: relative;
 }
 
-.stage {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  min-height: 300px;
-}
-
 .item,
 .item * {
   pointer-events: none;
