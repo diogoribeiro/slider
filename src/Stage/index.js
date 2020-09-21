@@ -15,7 +15,7 @@ const Stage = ({ children, onTouch }) => {
 
   const stopPosition = (e) => {
     const finalPosition = e.clientX;
-    const factor = finalPosition < initialPosition ? PREVIOUS_ITEM : NEXT_ITEM;
+    const factor = finalPosition < initialPosition ? NEXT_ITEM : PREVIOUS_ITEM;
     onTouch(factor);
   };
 
