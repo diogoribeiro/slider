@@ -6,15 +6,21 @@ import '@/Stage/Stage.css';
 const NEXT_ITEM = 1;
 const PREVIOUS_ITEM = -1;
 
+function getEvent(event) {
+  return event.changedTouches ? event.changedTouches[0] : event;
+}
+
 const Stage = ({ children, onTouch }) => {
   const [initialPosition, setInitialPosition] = useState(0);
 
   const initPosition = (e) => {
-    setInitialPosition(e.clientX);
+    const event = getEvent(e);
+    setInitialPosition(event.clientX);
   };
 
   const stopPosition = (e) => {
-    const finalPosition = e.clientX;
+    const event = getEvent(e);
+    const finalPosition = event.clientX;
 
     if (finalPosition !== initialPosition) {
       const factor = finalPosition < initialPosition ? NEXT_ITEM : PREVIOUS_ITEM;
