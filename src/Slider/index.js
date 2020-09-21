@@ -11,6 +11,14 @@ import RightNavigationArrow from '@/NavigationArrow/RightNavigationArrow';
 const NEXT_ITEM = 1;
 const PREVIOUS_ITEM = -1;
 
+function isNextItemBlocked(currentItem, totalItems, infinite) {
+  return currentItem === totalItems - 1 && !infinite;
+}
+
+function isPreviousItemBlocked(currentItem, infinite) {
+  return currentItem === 0 && !infinite;
+}
+
 function renderItems(items, currentItem) {
   return items.map((item, index) => {
     const className = index === currentItem ? 'item active' : 'item';
@@ -18,8 +26,8 @@ function renderItems(items, currentItem) {
   });
 }
 
-function renderLeftArrow(totalItems, onClick, CustomLeftArrow) {
-  if (totalItems <= 1) {
+function renderLeftArrow(totalItems, onClick, CustomLeftArrow, infinite, currentItem) {
+  if (totalItems <= 1 || isPreviousItemBlocked(currentItem, infinite)) {
     return null;
   }
 
@@ -28,17 +36,25 @@ function renderLeftArrow(totalItems, onClick, CustomLeftArrow) {
   );
 }
 
-function renderRightArrow(totalItems, onClick, CustomRightArrow) {
-  if (totalItems <= 1) {
+function renderRightArrow(totalItems, onClick, CustomRightArrow, infinite, currentItem) {
+  if (totalItems <= 1 || isNextItemBlocked(currentItem, totalItems, infinite)) {
     return null;
   }
 
   return (
-    <CustomRightArrow onClick={() => onClick(PREVIOUS_ITEM)} />
+    <CustomRightArrow onClick={() => onClick(NEXT_ITEM)} />
   );
 }
 
-function nextItem(factor, currentItem, totalItems) {
+function nextItem(factor, currentItem, totalItems, infinite) {
+  if (factor === NEXT_ITEM && isNextItemBlocked(currentItem, totalItems, infinite)) {
+    return currentItem;
+  }
+
+  if (factor === PREVIOUS_ITEM && isPreviousItemBlocked(currentItem, infinite)) {
+    return currentItem;
+  }
+
   if (factor === NEXT_ITEM && currentItem === totalItems - 1) {
     return 0;
   }
@@ -55,19 +71,22 @@ const Slider = ({
   customItemSelector: CustomItemSelector,
   customLeftArrow: CustomLeftArrow,
   customRightArrow: CustomRightArrow,
+  infinite,
 }) => {
   const items = [children].flat();
   const [currentItem, setCurrentItem] = useState(0);
-  const onClickArrow = (factor) => setCurrentItem(nextItem(factor, currentItem, items.length));
+  const onClickArrow = (factor) => setCurrentItem(
+    nextItem(factor, currentItem, items.length, infinite),
+  );
   const onClickItemSelector = (item) => setCurrentItem(item);
 
   return (
     <div className="container">
-      {renderLeftArrow(items.length, onClickArrow, CustomLeftArrow)}
+      {renderLeftArrow(items.length, onClickArrow, CustomLeftArrow, infinite, currentItem)}
       <Stage onTouch={onClickArrow}>
         {renderItems(items, currentItem)}
       </Stage>
-      {renderRightArrow(items.length, onClickArrow, CustomRightArrow)}
+      {renderRightArrow(items.length, onClickArrow, CustomRightArrow, infinite, currentItem)}
       <CustomItemSelector currentItem={currentItem} items={items} onClick={onClickItemSelector} />
     </div>
   );
@@ -78,6 +97,7 @@ Slider.propTypes = {
   customItemSelector: PropTypes.func,
   customLeftArrow: PropTypes.func,
   customRightArrow: PropTypes.func,
+  infinite: PropTypes.bool,
 };
 
 Slider.defaultProps = {
@@ -85,6 +105,7 @@ Slider.defaultProps = {
   customItemSelector: ItemSelector,
   customLeftArrow: LeftNavigationArrow,
   customRightArrow: RightNavigationArrow,
+  infinite: true,
 };
 
 export default Slider;

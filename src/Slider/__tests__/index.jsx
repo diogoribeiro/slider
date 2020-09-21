@@ -4,8 +4,8 @@ import '@testing-library/jest-dom/extend-expect';
 
 import Slider from '@/Slider';
 
-function buildSlider(children, customItemSelector) {
-  return <Slider customItemSelector={customItemSelector}>{children}</Slider>;
+function buildSlider({ children = [], customItemSelector = undefined, infinite = true }) {
+  return <Slider customItemSelector={customItemSelector} infinite={infinite}>{children}</Slider>;
 }
 
 const children = [
@@ -15,7 +15,7 @@ const children = [
 
 describe('Slider', () => {
   describe('with one child', () => {
-    const slider = buildSlider([]);
+    const slider = buildSlider({ children: children[0] });
 
     it('doesn\'t show the navigation arrows', () => {
       const { queryByLabelText } = render(slider);
@@ -26,10 +26,10 @@ describe('Slider', () => {
   });
 
   describe('with multiple children', () => {
-    const slider = buildSlider(children);
+    const slider = buildSlider({ children });
 
     it('has only one visible item', () => {
-      const { getByText } = render(buildSlider(children));
+      const { getByText } = render(slider);
 
       expect(getByText('Item #1').parentElement).toHaveClass('active');
       expect(getByText('Item #2').parentElement).not.toHaveClass('active');
@@ -59,7 +59,7 @@ describe('Slider', () => {
       expect(getByText('Item #1').parentElement).toHaveClass('active');
     });
 
-    it('allows infinite', () => {
+    it('has infinite enabled by default', () => {
       const { getByText, getByLabelText } = render(slider);
 
       fireEvent.click(getByLabelText('Next item'));
@@ -71,11 +71,23 @@ describe('Slider', () => {
 
       expect(getByText('Item #2').parentElement).toHaveClass('active');
     });
+
+    it('allows disabling infinite', () => {
+      const { queryByLabelText } = render(buildSlider({ children, infinite: false }));
+
+      expect(queryByLabelText('Previous item')).not.toBeInTheDocument();
+      expect(queryByLabelText('Next item')).toBeInTheDocument();
+
+      fireEvent.click(queryByLabelText('Next item'));
+
+      expect(queryByLabelText('Previous item')).toBeInTheDocument();
+      expect(queryByLabelText('Next item')).not.toBeInTheDocument();
+    });
   });
 
   describe('when click on the icon selector', () => {
     it('shows the selected item', () => {
-      const { getByLabelText, getByText } = render(buildSlider(children));
+      const { getByLabelText, getByText } = render(buildSlider({ children }));
 
       fireEvent.click(getByLabelText('Show item 2'));
 
@@ -93,7 +105,7 @@ describe('Slider', () => {
     );
 
     it('shows the custom item selector', () => {
-      const slider = buildSlider(children, CustomItemSelector);
+      const slider = buildSlider({ children, customItemSelector: CustomItemSelector });
       const { getByText } = render(slider);
       expect(getByText('Current Item: 1')).toBeInTheDocument();
     });

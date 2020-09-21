@@ -20,6 +20,9 @@ SingleItem.storyName = 'With a single item';
 export const MultipleItems = () => <Slider>{children}</Slider>;
 MultipleItems.storyName = 'With multiple items';
 
+export const WithoutInfinite = () => <Slider infinite={false}>{children}</Slider>;
+WithoutInfinite.storyName = 'With infinite disabled';
+
 const CustomItemSelector = ({ currentItem, items }) => (
   <div>
     <div>{`Current Item: ${currentItem + 1}`}</div>
